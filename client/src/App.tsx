@@ -15,6 +15,9 @@ import { RegisterPage } from "@/pages/Register";
 const DashboardPage = lazy(() =>
   import("@/pages/Dashboard").then((m) => ({ default: m.DashboardPage }))
 );
+const AnalyzerPage = lazy(() =>
+  import("@/pages/Analyzer").then((m) => ({ default: m.AnalyzerPage }))
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -76,8 +79,15 @@ function App() {
                 </Suspense>
               }
             />
-            {/* Placeholder routes for future phases */}
-            <Route path="/analyzer" element={<PlaceholderPage title="SEO Analyzer" />} />
+            {/* SEO Analyzer (Phase 2) */}
+            <Route
+              path="/analyzer"
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <AnalyzerPage />
+                </Suspense>
+              }
+            />
             <Route path="/keywords" element={<PlaceholderPage title="Keywords" />} />
             <Route path="/rankings" element={<PlaceholderPage title="Rankings" />} />
             <Route path="/websites" element={<PlaceholderPage title="Websites" />} />

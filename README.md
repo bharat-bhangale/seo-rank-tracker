@@ -100,6 +100,34 @@ The frontend runs at `http://localhost:5173` and proxies API calls to `http://lo
 | POST | `/api/v1/auth/reset-password/:token` | Reset password |
 | PUT | `/api/v1/auth/change-password` | Change password (authenticated) |
 | GET | `/api/v1/auth/me` | Get current user profile |
+### SEO Analyzer
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/analyzer/audit` | Run SEO audit on a URL |
+| GET | `/api/v1/analyzer/audit/:id` | Get audit result by ID |
+| GET | `/api/v1/analyzer/history` | Get paginated audit history |
+
+### Users
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/users/profile` | Get user profile |
+| PUT | `/api/v1/users/profile` | Update user profile |
+| GET | `/api/v1/users/usage` | Get usage stats |
+| DELETE | `/api/v1/users/account` | Delete account |
+
+### Projects
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/projects` | Create project |
+| GET | `/api/v1/projects` | List user projects |
+| GET | `/api/v1/projects/:id` | Get project details |
+| PUT | `/api/v1/projects/:id` | Update project |
+| DELETE | `/api/v1/projects/:id` | Delete project |
+| POST | `/api/v1/projects/:id/members` | Invite team member |
+| DELETE | `/api/v1/projects/:id/members/:userId` | Remove member |
 
 ## License
 
