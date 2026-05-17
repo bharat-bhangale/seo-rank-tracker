@@ -21,6 +21,9 @@ const AnalyzerPage = lazy(() =>
 const AiReportsPage = lazy(() =>
   import("@/pages/AiReports").then((m) => ({ default: m.AiReportsPage }))
 );
+const BacklinksPage = lazy(() =>
+  import("@/pages/Backlinks").then((m) => ({ default: m.BacklinksPage }))
+);
 const RankTrackingPage = lazy(() =>
   import("@/pages/RankTracking").then((m) => ({ default: m.RankTrackingPage }))
 );
@@ -111,7 +114,14 @@ function App() {
               }
             />
             <Route path="/websites" element={<PlaceholderPage title="Websites" />} />
-            <Route path="/backlinks" element={<PlaceholderPage title="Backlinks" />} />
+            <Route 
+              path="/backlinks" 
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <BacklinksPage />
+                </Suspense>
+              } 
+            />
             {/* AI Intelligence (Phase 3) */}
             <Route
               path="/reports"

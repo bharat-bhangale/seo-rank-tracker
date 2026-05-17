@@ -39,6 +39,10 @@ const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   GOOGLE_REDIRECT_URI: z.string().url().optional(),
 
+  // DataForSEO API (Backlinks)
+  DATAFORSEO_LOGIN: z.string().optional(),
+  DATAFORSEO_PASSWORD: z.string().optional(),
+
   // Gemini AI
   GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required for AI features"),
   GEMINI_FLASH_MODEL: z.string().default("gemini-2.5-flash"),

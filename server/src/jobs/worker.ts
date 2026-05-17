@@ -6,6 +6,7 @@ import { closeRedisConnection, getRedisConnection } from "./connection";
 import { closeQueues, QUEUE_NAMES } from "./queues";
 import { processGscSync } from "./processors/gsc-sync.processor";
 import { processRankCheck } from "./processors/rank-check.processor";
+import { processBacklinkSync } from "./processors/backlink-sync.processor";
 
 export const startWorkers = () => {
   const connection = getRedisConnection();
@@ -20,7 +21,12 @@ export const startWorkers = () => {
     concurrency: 2,
   });
 
-  const workers = [rankWorker, gscWorker];
+  const backlinkWorker = new Worker(QUEUE_NAMES.backlinkSync, processBacklinkSync, {
+    connection,
+    concurrency: 2,
+  });
+
+  const workers = [rankWorker, gscWorker, backlinkWorker];
 
   workers.forEach((worker) => {
     worker.on("completed", (job) => {

@@ -24,6 +24,12 @@ export interface GscSyncJobData {
   endDate?: string;
 }
 
+export interface BacklinkSyncJobData {
+  userId: string;
+  websiteId?: string;
+  domain: string;
+}
+
 const defaultJobOptions: JobsOptions = {
   attempts: 3,
   backoff: {
@@ -57,6 +63,19 @@ export const getGscSyncQueue = (): Queue<GscSyncJobData> => {
   }
 
   return gscSyncQueue;
+};
+
+let backlinkSyncQueue: Queue<BacklinkSyncJobData> | undefined;
+
+export const getBacklinkSyncQueue = (): Queue<BacklinkSyncJobData> => {
+  if (!backlinkSyncQueue) {
+    backlinkSyncQueue = new Queue<BacklinkSyncJobData>(QUEUE_NAMES.backlinkSync, {
+      connection: getRedisConnection(),
+      defaultJobOptions,
+    });
+  }
+
+  return backlinkSyncQueue;
 };
 
 export const enqueueRankCheck = async (
@@ -131,11 +150,23 @@ export const removeGscPropertyScheduler = async (
   return getGscSyncQueue().removeJobScheduler(`gsc:${propertyId}:daily-sync`);
 };
 
+export const enqueueBacklinkSync = async (
+  data: BacklinkSyncJobData,
+  opts: JobsOptions = {}
+) => {
+  return getBacklinkSyncQueue().add("sync-backlinks", data, {
+    priority: 3,
+    ...opts,
+  });
+};
+
 export const closeQueues = async (): Promise<void> => {
   await Promise.all([
     rankChecksQueue?.close(),
     gscSyncQueue?.close(),
+    backlinkSyncQueue?.close(),
   ]);
   rankChecksQueue = undefined;
   gscSyncQueue = undefined;
+  backlinkSyncQueue = undefined;
 };
