@@ -22,6 +22,7 @@ import aiReportsRoutes from "./modules/ai-reports/ai-reports.routes";
 import rankTrackingRoutes from "./modules/rank-tracking/rank-tracking.routes";
 import gscRoutes from "./modules/gsc/gsc.routes";
 import backlinksRoutes from "./modules/backlinks/backlinks.routes";
+import keywordResearchRoutes from "./modules/keyword-research/keyword-research.routes";
 
 const app = express();
 
@@ -70,6 +71,7 @@ app.use("/api/v1/keywords", rankTrackingRoutes);
 app.use("/api/v1/rank-tracking", rankTrackingRoutes);
 app.use("/api/v1/gsc", gscRoutes);
 app.use("/api/v1/backlinks", backlinksRoutes);
+app.use("/api/v1/research", keywordResearchRoutes);
 
 // Queue dashboard. Keep this behind admin auth.
 app.use(

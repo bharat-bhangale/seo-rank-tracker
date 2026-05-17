@@ -24,6 +24,9 @@ const AiReportsPage = lazy(() =>
 const BacklinksPage = lazy(() =>
   import("@/pages/Backlinks").then((m) => ({ default: m.BacklinksPage }))
 );
+const KeywordResearchPage = lazy(() =>
+  import("@/pages/KeywordResearch").then((m) => ({ default: m.KeywordResearchPage }))
+);
 const RankTrackingPage = lazy(() =>
   import("@/pages/RankTracking").then((m) => ({ default: m.RankTrackingPage }))
 );
@@ -119,6 +122,14 @@ function App() {
               element={
                 <Suspense fallback={<LoadingFallback />}>
                   <BacklinksPage />
+                </Suspense>
+              } 
+            />
+            <Route 
+              path="/research" 
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <KeywordResearchPage />
                 </Suspense>
               } 
             />
