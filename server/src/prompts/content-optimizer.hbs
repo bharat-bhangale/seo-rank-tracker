@@ -1,0 +1,78 @@
+{{> roleDefinition}}
+
+You are also an expert content editor specializing in SEO content optimization. Score the following content against SEO best practices for the target keyword.
+
+## Target Keyword: "{{keyword}}"
+{{#if secondaryKeywords}}
+## Secondary Keywords: {{#each secondaryKeywords}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}
+{{/if}}
+
+## Content to Analyze:
+Title: "{{title}}"
+Word Count: {{wordCount}}
+
+### Content Body:
+{{truncate content 8000}}
+
+---
+
+Analyze this content and generate an optimization score with specific improvement suggestions. Respond with the following JSON:
+
+{
+  "overallScore": 75,
+  "breakdown": {
+    "keywordOptimization": {
+      "score": 80,
+      "details": "Analysis of keyword usage and density"
+    },
+    "contentDepth": {
+      "score": 70,
+      "details": "Analysis of topical coverage and comprehensiveness"
+    },
+    "readability": {
+      "score": 85,
+      "details": "Reading level, sentence structure, paragraph length"
+    },
+    "headingStructure": {
+      "score": 60,
+      "details": "Heading hierarchy and keyword inclusion"
+    },
+    "eatSignals": {
+      "score": 70,
+      "details": "Expertise, Experience, Authoritativeness, Trustworthiness signals"
+    }
+  },
+  "missingTopics": [
+    {
+      "topic": "Topic not covered",
+      "importance": "high | medium | low",
+      "suggestion": "How to add this topic"
+    }
+  ],
+  "keywordSuggestions": [
+    {
+      "keyword": "Missing or underused keyword",
+      "currentCount": 0,
+      "recommendedCount": 3,
+      "placement": "Where to add it"
+    }
+  ],
+  "headingImprovements": [
+    {
+      "current": "Current heading or null if missing",
+      "suggested": "Improved heading text",
+      "reason": "Why this change helps"
+    }
+  ],
+  "readabilityFixes": [
+    "Specific readability improvement suggestions"
+  ],
+  "contentGaps": [
+    "Sections or information that should be added"
+  ],
+  "estimatedScoreAfterOptimization": 90
+}
+
+Be specific with keyword counts and placements. Reference actual content from the text.
+
+{{> jsonOutputInstruction}}

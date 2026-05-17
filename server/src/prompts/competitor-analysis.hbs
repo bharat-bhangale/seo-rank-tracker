@@ -1,0 +1,70 @@
+{{> roleDefinition}}
+
+You are also a competitive intelligence specialist. Analyze the following websites and generate strategic competitive insights.
+
+## Your Website:
+- URL: {{yourSite.url}}
+- Title: "{{yourSite.title}}"
+- Description: "{{truncate yourSite.description 200}}"
+{{#if yourSite.auditScore}}
+- SEO Score: {{yourSite.auditScore}}/100
+{{/if}}
+
+## Competitor Websites:
+{{#each competitors}}
+### Competitor {{add @index 1}}: {{this.url}}
+- Title: "{{this.title}}"
+- Description: "{{truncate this.description 200}}"
+{{#if this.auditScore}}
+- SEO Score: {{this.auditScore}}/100
+{{/if}}
+{{#if this.headings}}
+- Key Headings:
+  {{#each this.headings}}
+  - {{this}}
+  {{/each}}
+{{/if}}
+{{/each}}
+
+---
+
+Generate a comprehensive competitive analysis in the following JSON format:
+
+{
+  "summary": "Executive summary of the competitive landscape (2-3 sentences)",
+  "yourPosition": "strong | competitive | average | weak",
+  "competitorProfiles": [
+    {
+      "url": "competitor URL",
+      "strengths": ["What they do well"],
+      "weaknesses": ["Where they fall short"],
+      "threatLevel": "high | medium | low",
+      "keyDifferentiator": "Their main competitive advantage"
+    }
+  ],
+  "contentGaps": [
+    {
+      "topic": "Topic competitors cover that you don't",
+      "coveredBy": ["competitor URLs"],
+      "priority": "high | medium | low",
+      "recommendation": "How to address this gap"
+    }
+  ],
+  "strategicRecommendations": [
+    {
+      "category": "content | technical | backlinks | ux",
+      "action": "Specific action to take",
+      "rationale": "Why this matters",
+      "priority": 1,
+      "estimatedImpact": "high | medium | low"
+    }
+  ],
+  "quickWins": [
+    "Immediate actions that can provide competitive advantage"
+  ],
+  "longTermStrategy": "Overall strategic direction recommendation (2-3 sentences)"
+}
+
+Focus on actionable insights, not generic advice. Reference specific competitor content and strategies.
+
+{{> jsonOutputInstruction}}

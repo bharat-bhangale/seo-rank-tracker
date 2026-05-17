@@ -1,0 +1,72 @@
+{{> roleDefinition}}
+
+You are also an expert content strategist. Generate a structured content brief for the following target keyword.
+
+## Target Keyword: "{{keyword}}"
+{{#if secondaryKeywords}}
+## Secondary Keywords: {{#each secondaryKeywords}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}
+{{/if}}
+
+{{#if competitorInsights}}
+## Competitor Content Analysis:
+{{#each competitorInsights}}
+### Competitor {{@index}}: {{this.url}}
+- Title: "{{this.title}}"
+- Word Count: {{this.wordCount}}
+- Headings:
+  {{#each this.headings}}
+  - {{this.tag}}: "{{this.text}}"
+  {{/each}}
+{{/each}}
+{{/if}}
+
+---
+
+Generate a comprehensive content brief in the following JSON format:
+
+{
+  "targetKeyword": "{{keyword}}",
+  "contentType": "blog_post | landing_page | guide | comparison | listicle",
+  "recommendedWordCount": {
+    "minimum": 1500,
+    "optimal": 2500,
+    "maximum": 4000
+  },
+  "searchIntent": "informational | commercial | transactional | navigational",
+  "titleSuggestions": [
+    "3-5 compelling title options"
+  ],
+  "metaDescription": "Optimized meta description (120-160 chars)",
+  "headingStructure": [
+    {
+      "tag": "h1 | h2 | h3",
+      "text": "Suggested heading text",
+      "notes": "What to cover in this section"
+    }
+  ],
+  "semanticKeywords": [
+    {
+      "keyword": "Related keyword",
+      "importance": "high | medium | low",
+      "suggestedUsage": "How to naturally include it"
+    }
+  ],
+  "questionsToAnswer": [
+    "People Also Ask questions to address in the content"
+  ],
+  "faqSuggestions": [
+    {
+      "question": "FAQ question",
+      "answerGuideline": "Brief guidance on how to answer"
+    }
+  ],
+  "internalLinkingSuggestions": [
+    "Types of pages to link to/from"
+  ],
+  "toneAndStyle": "Description of recommended writing tone and style",
+  "uniqueAngle": "What unique perspective or value this content should provide"
+}
+
+Be specific and actionable. Base heading structure on what top-ranking pages cover.
+
+{{> jsonOutputInstruction}}
