@@ -1,0 +1,8 @@
+{
+  "event": "postToolUse",
+  "filter": {
+    "toolName": "edit"
+  },
+  "command": "npm run build --prefix server",
+  "description": "Run the backend TypeScript build after backend edits."
+}

@@ -1,0 +1,9 @@
+{
+  "event": "postToolUse",
+  "filter": {
+    "toolName": "bash",
+    "commandPattern": "npm test|vitest|npm run build"
+  },
+  "command": "node .github/hooks/scripts/summarize-quality-gate.js",
+  "description": "Summarize quality gate command results for the AI session."
+}

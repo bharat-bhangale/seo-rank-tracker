@@ -54,14 +54,18 @@ export const getUsageStats = async (
 
   // Import models dynamically to avoid circular dependencies
   const { Website } = await import("../../models/Website.model");
+  const { Keyword } = await import("../../models/Keyword.model");
 
-  const websiteCount = await Website.countDocuments({ userId });
+  const [websiteCount, keywordCount] = await Promise.all([
+    Website.countDocuments({ userId }),
+    Keyword.countDocuments({ userId, status: "active" }),
+  ]);
 
   return {
     plan,
     usage: {
       websites: { used: websiteCount, limit: limits.websiteLimit },
-      keywords: { used: 0, limit: limits.keywordLimit }, // Will be wired in Phase 4
+      keywords: { used: keywordCount, limit: limits.keywordLimit },
       dailyAudits: { used: 0, limit: limits.dailyAuditLimit },
       dailyReports: { used: 0, limit: limits.dailyReportLimit },
     },
@@ -80,9 +84,21 @@ export const deleteAccount = async (userId: string): Promise<void> => {
   // Delete associated data
   const { Website } = await import("../../models/Website.model");
   const { Project } = await import("../../models/Project.model");
+  const { Keyword } = await import("../../models/Keyword.model");
+  const { RankCheck } = await import("../../models/RankCheck.model");
+  const { RankAlert } = await import("../../models/RankAlert.model");
+  const { GscProperty } = await import("../../models/GscProperty.model");
+  const { GscPerformance } = await import("../../models/GscPerformance.model");
 
-  await Website.deleteMany({ userId });
-  await Project.deleteMany({ ownerId: userId });
+  await Promise.all([
+    Website.deleteMany({ userId }),
+    Project.deleteMany({ ownerId: userId }),
+    Keyword.deleteMany({ userId }),
+    RankCheck.deleteMany({ userId }),
+    RankAlert.deleteMany({ userId }),
+    GscProperty.deleteMany({ userId }),
+    GscPerformance.deleteMany({ userId }),
+  ]);
 
   // Remove from projects where they are a member
   await Project.updateMany(

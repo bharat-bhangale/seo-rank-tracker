@@ -3,13 +3,15 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import mongoSanitize from "express-mongo-sanitize";
 
 import { env } from "./config/env";
 import { connectDB } from "./config/db";
 import { logger } from "./utils/logger";
 import { errorHandler } from "./middleware/errorHandler.middleware";
 import { apiLimiter } from "./middleware/rateLimiter.middleware";
+import { authenticate, authorize } from "./middleware/auth.middleware";
+import { sanitizeRequest } from "./middleware/mongoSanitize.middleware";
+import { startWorkers } from "./jobs/worker";
 
 // Route imports
 import authRoutes from "./modules/auth/auth.routes";
@@ -17,6 +19,8 @@ import userRoutes from "./modules/user/user.routes";
 import projectRoutes from "./modules/project/project.routes";
 import analyzerRoutes from "./modules/seo-analyzer/seo-analyzer.routes";
 import aiReportsRoutes from "./modules/ai-reports/ai-reports.routes";
+import rankTrackingRoutes from "./modules/rank-tracking/rank-tracking.routes";
+import gscRoutes from "./modules/gsc/gsc.routes";
 
 const app = express();
 
@@ -28,7 +32,7 @@ app.use(
     credentials: true,
   })
 );
-app.use(mongoSanitize());
+app.use(sanitizeRequest);
 
 // ── Body Parsing ────────────────────────────────────────
 app.use(express.json({ limit: "10mb" }));
@@ -61,6 +65,20 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/projects", projectRoutes);
 app.use("/api/v1/analyzer", analyzerRoutes);
 app.use("/api/v1/ai", aiReportsRoutes);
+app.use("/api/v1/keywords", rankTrackingRoutes);
+app.use("/api/v1/rank-tracking", rankTrackingRoutes);
+app.use("/api/v1/gsc", gscRoutes);
+
+// Queue dashboard. Keep this behind admin auth.
+app.use(
+  "/admin/queues",
+  authenticate,
+  authorize("admin"),
+  async (req, res, next) => {
+    const { bullBoardRouter } = await import("./jobs/bullBoard");
+    return bullBoardRouter(req, res, next);
+  }
+);
 
 // ── 404 Handler ─────────────────────────────────────────
 app.use((_req, res) => {
@@ -76,6 +94,11 @@ app.use(errorHandler);
 // ── Start Server ────────────────────────────────────────
 const startServer = async () => {
   await connectDB();
+
+  if (env.ENABLE_WORKERS) {
+    startWorkers();
+    logger.info("Inline workers enabled");
+  }
 
   app.listen(env.PORT, () => {
     logger.info(

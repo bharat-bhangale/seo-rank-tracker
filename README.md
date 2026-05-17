@@ -19,6 +19,8 @@ A production-grade, full-stack AI-powered SEO Rank Tracker SaaS built with the *
 | **Frontend** | React 19, TypeScript, Vite 6, Tailwind CSS v4, Zustand, TanStack Query |
 | **Backend** | Node.js 22, Express 5, TypeScript, Zod |
 | **Database** | MongoDB Atlas, Mongoose 8 |
+| **Queues** | BullMQ, Redis, Bull Board |
+| **Automation** | Browserbase, Stagehand, SerpApi fallback |
 | **Auth** | JWT (access + refresh token rotation), bcrypt, HttpOnly cookies |
 | **AI** | Google Gemini 2.5 Flash/Pro |
 
@@ -81,9 +83,15 @@ npm run dev
 # Terminal 2: Start frontend
 cd client
 npm run dev
+
+# Terminal 3: Start background workers when Redis is running
+cd server
+npm run worker
 ```
 
 The frontend runs at `http://localhost:5173` and proxies API calls to `http://localhost:5000`.
+
+The queue dashboard is available at `http://localhost:5000/admin/queues` for authenticated admin users.
 
 ## API Endpoints
 
@@ -138,6 +146,33 @@ The frontend runs at `http://localhost:5173` and proxies API calls to `http://lo
 | POST | `/api/v1/ai/reports/content-score` | Score content against SEO best practices |
 | POST | `/api/v1/ai/reports/competitor-analysis` | Analyze competitor websites |
 | GET | `/api/v1/ai/reports/history` | Get report history |
+
+### Rank Tracking
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/keywords` | Add a tracked keyword |
+| GET | `/api/v1/keywords` | List tracked keywords |
+| PUT | `/api/v1/keywords/:id` | Update keyword settings |
+| DELETE | `/api/v1/keywords/:id` | Delete keyword and history |
+| POST | `/api/v1/keywords/:id/check` | Queue an on-demand rank check |
+| GET | `/api/v1/keywords/:id/trend` | Get ranking history |
+| POST | `/api/v1/keywords/bulk-import` | Import keywords from CSV text |
+| GET | `/api/v1/keywords/alerts` | List rank and SERP feature alerts |
+| GET | `/api/v1/keywords/features/summary` | Summarize tracked SERP features |
+| POST | `/api/v1/keywords/:id/geo-grid` | Queue local geo-grid checks |
+| GET | `/api/v1/keywords/:id/geo-grid` | Get latest local geo-grid results |
+| GET | `/api/v1/keywords/ai-visibility` | Get AI Overview citation stats |
+
+### Google Search Console
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/gsc/auth-url` | Generate OAuth URL |
+| POST | `/api/v1/gsc/properties` | Connect a GSC property |
+| GET | `/api/v1/gsc/properties` | List connected properties |
+| POST | `/api/v1/gsc/properties/:id/sync` | Queue Search Analytics sync |
+| GET | `/api/v1/gsc/properties/:id/performance` | Read imported GSC performance |
 | GET | `/api/v1/ai/reports/:id` | Get specific report |
 | GET | `/api/v1/ai/usage` | Get AI token usage stats |
 

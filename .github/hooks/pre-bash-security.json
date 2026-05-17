@@ -1,0 +1,8 @@
+{
+  "event": "preToolUse",
+  "filter": {
+    "toolName": "bash"
+  },
+  "command": "node .github/hooks/scripts/validate-command.js",
+  "description": "Block dangerous shell commands before they run."
+}
