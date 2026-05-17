@@ -1,0 +1,60 @@
+{{> roleDefinition}}
+
+Analyze the following SEO audit data for a website and generate a comprehensive, actionable SEO report.
+
+{{> auditContext}}
+
+## Category Breakdown:
+{{#each categoryScores}}
+- **{{this.category}}**: Score {{this.score}}/{{this.maxScore}} ({{this.checksCount}} checks, {{this.criticalCount}} critical, {{this.warningCount}} warnings)
+{{/each}}
+
+## Detailed Check Results:
+{{#each checks}}
+- {{severityEmoji this.severity}} **{{this.name}}** [{{this.category}}]: {{scoreBar this.score}}
+  {{this.message}}
+{{/each}}
+
+## Page Metadata:
+- Title: {{#if pageData.title}}"{{pageData.title}}"{{else}}MISSING{{/if}}
+- Description: {{#if pageData.description}}"{{truncate pageData.description 120}}"{{else}}MISSING{{/if}}
+- H1: {{#if pageData.h1}}"{{pageData.h1}}"{{else}}MISSING{{/if}}
+- Load Time: {{pageData.loadTimeMs}}ms
+- HTTPS: {{#if pageData.isHttps}}Yes{{else}}No{{/if}}
+- Status Code: {{pageData.statusCode}}
+
+---
+
+Generate a structured SEO report with the following JSON format:
+
+{
+  "executiveSummary": "A 2-3 sentence overview of the site's SEO health",
+  "overallAssessment": "One of: excellent | good | needs_improvement | poor | critical",
+  "prioritizedActions": [
+    {
+      "priority": 1,
+      "category": "onPage | technical | performance | content",
+      "title": "Short action title",
+      "description": "Detailed explanation of what to do",
+      "impact": "high | medium | low",
+      "effort": "quick_fix | moderate | major_project",
+      "codeSnippet": "Optional HTML/code snippet to implement the fix"
+    }
+  ],
+  "strengths": ["List of things the site does well"],
+  "technicalRoadmap": [
+    {
+      "phase": "immediate | short_term | long_term",
+      "action": "What to do",
+      "expectedImpact": "Expected SEO improvement"
+    }
+  ],
+  "contentRecommendations": [
+    "Specific content improvement suggestions"
+  ],
+  "estimatedScoreAfterFixes": 85
+}
+
+Provide at least 5 prioritized actions, ordered by impact. Include code snippets where helpful (e.g., meta tag corrections, schema markup). Be specific, not generic.
+
+{{> jsonOutputInstruction}}

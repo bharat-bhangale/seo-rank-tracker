@@ -17,6 +17,11 @@ const envSchema = z.object({
 
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().email().optional(),
+
+  // Gemini AI
+  GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required for AI features"),
+  GEMINI_FLASH_MODEL: z.string().default("gemini-2.5-flash"),
+  GEMINI_PRO_MODEL: z.string().default("gemini-2.5-pro"),
 });
 
 const parsed = envSchema.safeParse(process.env);

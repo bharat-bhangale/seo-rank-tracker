@@ -16,6 +16,7 @@ import authRoutes from "./modules/auth/auth.routes";
 import userRoutes from "./modules/user/user.routes";
 import projectRoutes from "./modules/project/project.routes";
 import analyzerRoutes from "./modules/seo-analyzer/seo-analyzer.routes";
+import aiReportsRoutes from "./modules/ai-reports/ai-reports.routes";
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/projects", projectRoutes);
 app.use("/api/v1/analyzer", analyzerRoutes);
+app.use("/api/v1/ai", aiReportsRoutes);
 
 // ── 404 Handler ─────────────────────────────────────────
 app.use((_req, res) => {

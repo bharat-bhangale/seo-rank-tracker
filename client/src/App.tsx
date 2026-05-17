@@ -18,6 +18,9 @@ const DashboardPage = lazy(() =>
 const AnalyzerPage = lazy(() =>
   import("@/pages/Analyzer").then((m) => ({ default: m.AnalyzerPage }))
 );
+const AiReportsPage = lazy(() =>
+  import("@/pages/AiReports").then((m) => ({ default: m.AiReportsPage }))
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -92,7 +95,15 @@ function App() {
             <Route path="/rankings" element={<PlaceholderPage title="Rankings" />} />
             <Route path="/websites" element={<PlaceholderPage title="Websites" />} />
             <Route path="/backlinks" element={<PlaceholderPage title="Backlinks" />} />
-            <Route path="/reports" element={<PlaceholderPage title="Reports" />} />
+            {/* AI Intelligence (Phase 3) */}
+            <Route
+              path="/reports"
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <AiReportsPage />
+                </Suspense>
+              }
+            />
             <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
           </Route>
 

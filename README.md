@@ -129,6 +129,18 @@ The frontend runs at `http://localhost:5173` and proxies API calls to `http://lo
 | POST | `/api/v1/projects/:id/members` | Invite team member |
 | DELETE | `/api/v1/projects/:id/members/:userId` | Remove member |
 
+### AI Intelligence
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/ai/reports/seo` | Generate AI SEO report from audit |
+| POST | `/api/v1/ai/reports/content-brief` | Generate content brief for keyword |
+| POST | `/api/v1/ai/reports/content-score` | Score content against SEO best practices |
+| POST | `/api/v1/ai/reports/competitor-analysis` | Analyze competitor websites |
+| GET | `/api/v1/ai/reports/history` | Get report history |
+| GET | `/api/v1/ai/reports/:id` | Get specific report |
+| GET | `/api/v1/ai/usage` | Get AI token usage stats |
+
 ## License
 
 MIT
