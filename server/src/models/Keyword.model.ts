@@ -30,6 +30,7 @@ export interface IKeyword extends Document {
     gridSize?: number;
   };
   lastPosition?: number;
+  previousPosition?: number;
   bestPosition?: number;
   lastUrl?: string;
   lastCheckedAt?: Date;
@@ -110,6 +111,7 @@ const keywordSchema = new Schema<IKeyword>(
     },
     geoTarget: geoTargetSchema,
     lastPosition: Number,
+    previousPosition: Number,
     bestPosition: Number,
     lastUrl: String,
     lastCheckedAt: Date,

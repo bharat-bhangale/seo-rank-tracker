@@ -8,6 +8,11 @@ export interface IWebsite extends Document {
   isVerified: boolean;
   verificationMethod?: "dns" | "file" | "meta";
   favicon?: string;
+  whiteLabel?: {
+    logoUrl?: string;
+    brandColor?: string;
+    companyName?: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -43,6 +48,11 @@ const websiteSchema = new Schema<IWebsite>(
       enum: ["dns", "file", "meta"],
     },
     favicon: String,
+    whiteLabel: {
+      logoUrl: { type: String },
+      brandColor: { type: String },
+      companyName: { type: String },
+    },
   },
   { timestamps: true }
 );
