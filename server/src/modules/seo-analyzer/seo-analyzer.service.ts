@@ -38,6 +38,13 @@ import {
   checkStructuredData,
 } from "./checks/content.checks";
 
+// Structured data checks
+import {
+  checkJsonLd,
+  checkMicrodata,
+  checkSocialMeta,
+} from "./checks/structured-data.checks";
+
 const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB limit
 
 /**
@@ -119,6 +126,11 @@ function runAllChecks($: cheerio.CheerioAPI, url: string): SeoCheckResult[] {
   checks.push(checkContentLength($));
   checks.push(checkInternalLinks($, url));
   checks.push(checkStructuredData($));
+
+  // Structured data checks
+  checks.push(checkJsonLd($));
+  checks.push(checkMicrodata($));
+  checks.push(checkSocialMeta($));
 
   return checks;
 }

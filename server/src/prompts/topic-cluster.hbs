@@ -1,0 +1,46 @@
+{{> roleDefinition}}
+
+You are tasked with generating a comprehensive topic cluster strategy based on a seed keyword.
+
+## Seed Keyword: {{seedKeyword}}
+
+## Your Task:
+Analyze the seed keyword and generate a complete topic cluster with:
+1. A pillar topic (main comprehensive content piece)
+2. 8-15 supporting subtopics (cluster content pieces)
+3. Search intent classification for each subtopic
+4. Estimated search volume and difficulty scores
+5. Suggested internal linking structure
+
+## Requirements:
+- The pillar topic should be broad enough to link naturally to all subtopics
+- Subtopics should cover different angles, questions, and aspects of the main topic
+- Include a mix of informational, commercial, and transactional intent keywords
+- Estimate realistic search volumes (relative, not exact)
+- Difficulty scores should be on a 0-100 scale
+
+{{> jsonOutputInstruction}}
+
+Respond with this JSON structure:
+{
+  "pillarTopic": "string — the main pillar page topic",
+  "pillarDescription": "string — brief description of what the pillar page should cover",
+  "subTopics": [
+    {
+      "keyword": "string — the subtopic keyword",
+      "searchVolume": number,
+      "difficulty": number,
+      "intent": "informational | commercial | transactional | navigational",
+      "suggestedTitle": "string — suggested H1/title for this page",
+      "linkToFrom": "string — which other cluster page should link to this"
+    }
+  ],
+  "overallVolume": number,
+  "contentCalendar": [
+    {
+      "week": number,
+      "keyword": "string",
+      "priority": "high | medium | low"
+    }
+  ]
+}

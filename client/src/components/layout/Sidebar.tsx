@@ -14,21 +14,47 @@ import {
   ChevronLeft,
   Menu,
   TrendingUp,
+  Sparkles,
+  Swords,
+  Bug,
 } from "lucide-react";
 
-const navItems = [
-  { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { label: "SEO Analyzer", path: "/analyzer", icon: Search },
-  { label: "Keywords", path: "/keywords", icon: TrendingUp },
-  { label: "Rankings", path: "/rankings", icon: BarChart3 },
-  { label: "Websites", path: "/websites", icon: Globe },
-  { label: "Backlinks", path: "/backlinks", icon: Link2 },
-  { label: "Reports", path: "/reports", icon: FileText },
-  { label: "Settings", path: "/settings", icon: Settings },
+const navSections = [
+  {
+    label: "Overview",
+    items: [
+      { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+      { label: "SEO Analyzer", path: "/analyzer", icon: Search },
+    ],
+  },
+  {
+    label: "Tracking",
+    items: [
+      { label: "Keywords", path: "/keywords", icon: TrendingUp },
+      { label: "Rankings", path: "/rankings", icon: BarChart3 },
+      { label: "Websites", path: "/websites", icon: Globe },
+      { label: "Backlinks", path: "/backlinks", icon: Link2 },
+    ],
+  },
+  {
+    label: "AI Tools",
+    items: [
+      { label: "Content Studio", path: "/content", icon: Sparkles },
+      { label: "Competitors", path: "/competitors", icon: Swords },
+      { label: "AI Reports", path: "/reports", icon: FileText },
+    ],
+  },
+  {
+    label: "Technical",
+    items: [
+      { label: "Site Crawler", path: "/crawler", icon: Bug },
+    ],
+  },
 ];
 
 /**
  * Main sidebar navigation component with collapse functionality.
+ * Organized into logical sections with dividers.
  */
 export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -73,31 +99,62 @@ export function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-primary-50 text-primary-700"
-                    : "text-surface-700 hover:bg-surface-100 hover:text-surface-900"
-                )}
-                title={isCollapsed ? item.label : undefined}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                {!isCollapsed && <span>{item.label}</span>}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 py-4 px-3 overflow-y-auto">
+          {navSections.map((section, sIdx) => (
+            <div key={section.label}>
+              {!isCollapsed && (
+                <p className="text-[10px] font-semibold text-surface-400 uppercase tracking-wider px-3 mb-1 mt-3">
+                  {section.label}
+                </p>
+              )}
+              {isCollapsed && sIdx > 0 && (
+                <div className="border-t border-surface-100 my-2 mx-2" />
+              )}
+              <div className="space-y-0.5">
+                {section.items.map((item) => {
+                  const isActive =
+                    location.pathname === item.path ||
+                    (item.path !== "/dashboard" && location.pathname.startsWith(item.path));
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                        isActive
+                          ? "bg-primary-50 text-primary-700"
+                          : "text-surface-700 hover:bg-surface-100 hover:text-surface-900"
+                      )}
+                      title={isCollapsed ? item.label : undefined}
+                    >
+                      <Icon className="h-5 w-5 shrink-0" />
+                      {!isCollapsed && <span>{item.label}</span>}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* Footer */}
         <div className="border-t border-surface-200 p-3 space-y-2">
+          {/* Settings link */}
+          <Link
+            to="/settings"
+            className={cn(
+              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+              location.pathname === "/settings"
+                ? "bg-primary-50 text-primary-700"
+                : "text-surface-700 hover:bg-surface-100"
+            )}
+            title={isCollapsed ? "Settings" : undefined}
+          >
+            <Settings className="h-5 w-5 shrink-0" />
+            {!isCollapsed && <span>Settings</span>}
+          </Link>
+
           {/* User info */}
           {!isCollapsed && user && (
             <div className="flex items-center gap-3 px-3 py-2">

@@ -31,6 +31,20 @@ const RankTrackingPage = lazy(() =>
   import("@/pages/RankTracking").then((m) => ({ default: m.RankTrackingPage }))
 );
 
+// New pages (lazy loaded)
+const SiteCrawlerPage = lazy(() =>
+  import("@/pages/SiteCrawler").then((m) => ({ default: m.SiteCrawlerPage }))
+);
+const ContentBriefPage = lazy(() =>
+  import("@/pages/ContentBrief").then((m) => ({ default: m.ContentBriefPage }))
+);
+const CompetitorsPage = lazy(() =>
+  import("@/pages/Competitors").then((m) => ({ default: m.CompetitorsPage }))
+);
+const SettingsPage = lazy(() =>
+  import("@/pages/Settings").then((m) => ({ default: m.SettingsPage }))
+);
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -91,7 +105,7 @@ function App() {
                 </Suspense>
               }
             />
-            {/* SEO Analyzer (Phase 2) */}
+            {/* SEO Analyzer */}
             <Route
               path="/analyzer"
               element={
@@ -116,24 +130,31 @@ function App() {
                 </Suspense>
               }
             />
-            <Route path="/websites" element={<PlaceholderPage title="Websites" />} />
-            <Route 
-              path="/backlinks" 
+            <Route
+              path="/websites"
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <DashboardPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/backlinks"
               element={
                 <Suspense fallback={<LoadingFallback />}>
                   <BacklinksPage />
                 </Suspense>
-              } 
+              }
             />
-            <Route 
-              path="/research" 
+            <Route
+              path="/research"
               element={
                 <Suspense fallback={<LoadingFallback />}>
                   <KeywordResearchPage />
                 </Suspense>
-              } 
+              }
             />
-            {/* AI Intelligence (Phase 3) */}
+            {/* AI Intelligence */}
             <Route
               path="/reports"
               element={
@@ -142,7 +163,40 @@ function App() {
                 </Suspense>
               }
             />
-            <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
+            <Route
+              path="/content"
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <ContentBriefPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/competitors"
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <CompetitorsPage />
+                </Suspense>
+              }
+            />
+            {/* Technical */}
+            <Route
+              path="/crawler"
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <SiteCrawlerPage />
+                </Suspense>
+              }
+            />
+            {/* Settings */}
+            <Route
+              path="/settings"
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <SettingsPage />
+                </Suspense>
+              }
+            />
           </Route>
 
           {/* Redirect root to dashboard */}
@@ -152,18 +206,6 @@ function App() {
       </BrowserRouter>
       <Toaster position="top-right" richColors />
     </QueryClientProvider>
-  );
-}
-
-/** Temporary placeholder for future pages */
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div>
-      <h1 className="text-2xl font-bold text-surface-900 mb-2">{title}</h1>
-      <p className="text-surface-500">
-        This page will be implemented in a future phase.
-      </p>
-    </div>
   );
 }
 

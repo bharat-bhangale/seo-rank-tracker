@@ -25,6 +25,10 @@ import backlinksRoutes from "./modules/backlinks/backlinks.routes";
 import keywordResearchRoutes from "./modules/keyword-research/keyword-research.routes";
 import analyticsRoutes from "./modules/analytics/analytics.routes";
 import exportRoutes from "./modules/export/export.routes";
+import siteCrawlerRoutes from "./modules/site-crawler/site-crawler.routes";
+import contentRoutes from "./modules/content/content.routes";
+import competitorsRoutes from "./modules/competitors/competitors.routes";
+import notificationsRoutes from "./modules/notifications/notifications.routes";
 
 const app = express();
 
@@ -76,6 +80,10 @@ app.use("/api/v1/backlinks", backlinksRoutes);
 app.use("/api/v1/research", keywordResearchRoutes);
 app.use("/api/v1/analytics", analyticsRoutes);
 app.use("/api/v1/export", exportRoutes);
+app.use("/api/v1/crawl", siteCrawlerRoutes);
+app.use("/api/v1/content", contentRoutes);
+app.use("/api/v1/competitors", competitorsRoutes);
+app.use("/api/v1/notifications", notificationsRoutes);
 
 // Queue dashboard. Keep this behind admin auth.
 app.use(

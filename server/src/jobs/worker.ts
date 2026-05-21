@@ -7,6 +7,9 @@ import { closeQueues, QUEUE_NAMES } from "./queues";
 import { processGscSync } from "./processors/gsc-sync.processor";
 import { processRankCheck } from "./processors/rank-check.processor";
 import { processBacklinkSync } from "./processors/backlink-sync.processor";
+import { processSeoAudit } from "./processors/seo-audit.processor";
+import { processAiReport } from "./processors/ai-report.processor";
+import { processSiteCrawl } from "./processors/site-crawl.processor";
 
 export const startWorkers = () => {
   const connection = getRedisConnection();
@@ -26,7 +29,29 @@ export const startWorkers = () => {
     concurrency: 2,
   });
 
-  const workers = [rankWorker, gscWorker, backlinkWorker];
+  const seoAuditWorker = new Worker(QUEUE_NAMES.seoAudits, processSeoAudit, {
+    connection,
+    concurrency: 3,
+  });
+
+  const aiReportWorker = new Worker(QUEUE_NAMES.aiReports, processAiReport, {
+    connection,
+    concurrency: 2,
+  });
+
+  const siteCrawlWorker = new Worker(QUEUE_NAMES.siteCrawls, processSiteCrawl, {
+    connection,
+    concurrency: 1, // Crawls are resource-intensive
+  });
+
+  const workers = [
+    rankWorker,
+    gscWorker,
+    backlinkWorker,
+    seoAuditWorker,
+    aiReportWorker,
+    siteCrawlWorker,
+  ];
 
   workers.forEach((worker) => {
     worker.on("completed", (job) => {

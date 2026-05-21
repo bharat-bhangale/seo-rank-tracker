@@ -30,6 +30,32 @@ export interface BacklinkSyncJobData {
   domain: string;
 }
 
+export interface SeoAuditJobData {
+  userId: string;
+  url: string;
+  websiteId?: string;
+}
+
+export interface SiteCrawlJobData {
+  crawlId: string;
+  userId: string;
+  domain: string;
+}
+
+export interface AiReportJobData {
+  reportId: string;
+  userId: string;
+}
+
+export interface NotificationJobData {
+  userId: string;
+  type: string;
+  title: string;
+  message: string;
+  link?: string;
+  metadata?: Record<string, unknown>;
+}
+
 const defaultJobOptions: JobsOptions = {
   attempts: 3,
   backoff: {
@@ -40,8 +66,16 @@ const defaultJobOptions: JobsOptions = {
   removeOnFail: { count: 500 },
 };
 
+// ── Queue Singletons ────────────────────────────────────
+
 let rankChecksQueue: Queue<RankCheckJobData> | undefined;
 let gscSyncQueue: Queue<GscSyncJobData> | undefined;
+let backlinkSyncQueue: Queue<BacklinkSyncJobData> | undefined;
+let seoAuditsQueue: Queue<SeoAuditJobData> | undefined;
+let siteCrawlsQueue: Queue<SiteCrawlJobData> | undefined;
+let aiReportsQueue: Queue<AiReportJobData> | undefined;
+
+// ── Queue Getters ───────────────────────────────────────
 
 export const getRankChecksQueue = (): Queue<RankCheckJobData> => {
   if (!rankChecksQueue) {
@@ -65,8 +99,6 @@ export const getGscSyncQueue = (): Queue<GscSyncJobData> => {
   return gscSyncQueue;
 };
 
-let backlinkSyncQueue: Queue<BacklinkSyncJobData> | undefined;
-
 export const getBacklinkSyncQueue = (): Queue<BacklinkSyncJobData> => {
   if (!backlinkSyncQueue) {
     backlinkSyncQueue = new Queue<BacklinkSyncJobData>(QUEUE_NAMES.backlinkSync, {
@@ -77,6 +109,41 @@ export const getBacklinkSyncQueue = (): Queue<BacklinkSyncJobData> => {
 
   return backlinkSyncQueue;
 };
+
+export const getSeoAuditsQueue = (): Queue<SeoAuditJobData> => {
+  if (!seoAuditsQueue) {
+    seoAuditsQueue = new Queue<SeoAuditJobData>(QUEUE_NAMES.seoAudits, {
+      connection: getRedisConnection(),
+      defaultJobOptions,
+    });
+  }
+  return seoAuditsQueue;
+};
+
+export const getSiteCrawlsQueue = (): Queue<SiteCrawlJobData> => {
+  if (!siteCrawlsQueue) {
+    siteCrawlsQueue = new Queue<SiteCrawlJobData>(QUEUE_NAMES.siteCrawls, {
+      connection: getRedisConnection(),
+      defaultJobOptions: {
+        ...defaultJobOptions,
+        attempts: 1, // Crawls are long-running; don't retry
+      },
+    });
+  }
+  return siteCrawlsQueue;
+};
+
+export const getAiReportsQueue = (): Queue<AiReportJobData> => {
+  if (!aiReportsQueue) {
+    aiReportsQueue = new Queue<AiReportJobData>(QUEUE_NAMES.aiReports, {
+      connection: getRedisConnection(),
+      defaultJobOptions,
+    });
+  }
+  return aiReportsQueue;
+};
+
+// ── Enqueue Functions ───────────────────────────────────
 
 export const enqueueRankCheck = async (
   data: RankCheckJobData,
@@ -160,13 +227,51 @@ export const enqueueBacklinkSync = async (
   });
 };
 
+export const enqueueSeoAudit = async (
+  data: SeoAuditJobData,
+  opts: JobsOptions = {}
+) => {
+  return getSeoAuditsQueue().add("run-seo-audit", data, {
+    priority: data.websiteId ? 3 : 1, // On-demand audits get higher priority
+    ...opts,
+  });
+};
+
+export const enqueueSiteCrawl = async (
+  data: SiteCrawlJobData,
+  opts: JobsOptions = {}
+) => {
+  return getSiteCrawlsQueue().add("crawl-site", data, {
+    priority: 5,
+    ...opts,
+  });
+};
+
+export const enqueueAiReport = async (
+  data: AiReportJobData,
+  opts: JobsOptions = {}
+) => {
+  return getAiReportsQueue().add("generate-ai-report", data, {
+    priority: 3,
+    ...opts,
+  });
+};
+
+// ── Cleanup ─────────────────────────────────────────────
+
 export const closeQueues = async (): Promise<void> => {
   await Promise.all([
     rankChecksQueue?.close(),
     gscSyncQueue?.close(),
     backlinkSyncQueue?.close(),
+    seoAuditsQueue?.close(),
+    siteCrawlsQueue?.close(),
+    aiReportsQueue?.close(),
   ]);
   rankChecksQueue = undefined;
   gscSyncQueue = undefined;
   backlinkSyncQueue = undefined;
+  seoAuditsQueue = undefined;
+  siteCrawlsQueue = undefined;
+  aiReportsQueue = undefined;
 };
