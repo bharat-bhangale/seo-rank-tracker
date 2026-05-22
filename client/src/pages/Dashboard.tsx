@@ -4,18 +4,18 @@ import {
   BarChart3,
   TrendingUp,
   Zap,
-  Users,
-  Eye,
   Target,
   Download,
-  Loader2,
   Bell,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Eye,
+  Search,
 } from "lucide-react";
 import { analyticsApi } from "@/lib/analyticsApi";
 import { exportApi } from "@/lib/exportApi";
 import { Link } from "react-router-dom";
+import { PageHeader, StatCard, LoadingSpinner } from "@/components/ui";
 
 export function DashboardPage() {
   const [domain, setDomain] = useState("");
@@ -40,80 +40,58 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-surface-900">Dashboard</h1>
-          <p className="text-surface-500 mt-1">
-            Welcome back! Here's your SEO overview.
-          </p>
+      <PageHeader title="Dashboard" description="Welcome back! Here's your SEO overview.">
+        <input
+          type="text"
+          className="input w-full sm:w-64"
+          placeholder="Filter by domain..."
+          value={domain}
+          onChange={(e) => setDomain(e.target.value)}
+        />
+        <div className="flex gap-2">
+          <button onClick={handleExportKeywords} className="btn btn-secondary" title="Export Keywords CSV">
+            <Download className="h-4 w-4" /> <span className="hidden sm:inline">KWs</span>
+          </button>
+          <button onClick={handleExportBacklinks} className="btn btn-secondary" title="Export Backlinks CSV">
+            <Download className="h-4 w-4" /> <span className="hidden sm:inline">Backlinks</span>
+          </button>
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <input
-            type="text"
-            className="input w-full sm:w-64"
-            placeholder="Filter by domain..."
-            value={domain}
-            onChange={(e) => setDomain(e.target.value)}
-          />
-          <div className="flex gap-2">
-            <button onClick={handleExportKeywords} className="btn btn-secondary" title="Export Keywords CSV">
-              <Download className="h-4 w-4" /> <span className="hidden sm:inline">KWs</span>
-            </button>
-            <button onClick={handleExportBacklinks} className="btn btn-secondary" title="Export Backlinks CSV">
-              <Download className="h-4 w-4" /> <span className="hidden sm:inline">Backlinks</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      </PageHeader>
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
-        </div>
+        <LoadingSpinner />
       ) : (
         <>
           {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="card flex items-center gap-4">
-              <div className="p-3 rounded-xl text-primary-600 bg-primary-50">
-                <Target className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm text-surface-500">Keywords Tracked</p>
-                <p className="text-xl font-bold text-surface-900">{kpis?.totalKeywords || 0}</p>
-              </div>
-            </div>
-
-            <div className="card flex items-center gap-4">
-              <div className="p-3 rounded-xl text-amber-600 bg-amber-50">
-                <BarChart3 className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm text-surface-500">Avg. Position</p>
-                <p className="text-xl font-bold text-surface-900">{kpis?.avgPosition || "—"}</p>
-              </div>
-            </div>
-
-            <div className="card flex items-center gap-4">
-              <div className="p-3 rounded-xl text-emerald-600 bg-emerald-50">
-                <Eye className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm text-surface-500">Visibility Score</p>
-                <p className="text-xl font-bold text-surface-900">{kpis?.visibilityScore?.toLocaleString() || 0}</p>
-              </div>
-            </div>
-
-            <div className="card flex items-center gap-4">
-              <div className="p-3 rounded-xl text-violet-600 bg-violet-50">
-                <TrendingUp className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm text-surface-500">Top 10 Rankings</p>
-                <p className="text-xl font-bold text-surface-900">{kpis?.keywordsInTop10 || 0}</p>
-              </div>
-            </div>
+            <StatCard
+              label="Keywords Tracked"
+              value={kpis?.totalKeywords || 0}
+              icon={<Target className="h-5 w-5" />}
+              iconColor="text-primary-600"
+              iconBg="bg-primary-50"
+            />
+            <StatCard
+              label="Avg. Position"
+              value={kpis?.avgPosition || "—"}
+              icon={<BarChart3 className="h-5 w-5" />}
+              iconColor="text-amber-600"
+              iconBg="bg-amber-50"
+            />
+            <StatCard
+              label="Visibility Score"
+              value={kpis?.visibilityScore?.toLocaleString() || 0}
+              icon={<Eye className="h-5 w-5" />}
+              iconColor="text-emerald-600"
+              iconBg="bg-emerald-50"
+            />
+            <StatCard
+              label="Top 10 Rankings"
+              value={kpis?.keywordsInTop10 || 0}
+              icon={<TrendingUp className="h-5 w-5" />}
+              iconColor="text-violet-600"
+              iconBg="bg-violet-50"
+            />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -169,25 +147,25 @@ export function DashboardPage() {
               <div className="card">
                 <h2 className="text-lg font-semibold text-surface-900 mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <Link to="/reports" className="flex items-center gap-3 p-4 rounded-xl border border-surface-200 hover:border-primary-300 hover:bg-primary-50 transition-colors text-left">
+                  <Link to="/analyzer" className="flex items-center gap-3 p-4 rounded-xl border border-surface-200 hover:border-primary-300 hover:bg-primary-50 transition-colors text-left">
                     <Zap className="h-5 w-5 text-primary-600" />
                     <div>
                       <p className="font-medium text-surface-900 text-sm">Run SEO Audit</p>
                       <p className="text-xs text-surface-500">Analyze any website</p>
                     </div>
                   </Link>
-                  <Link to="/rank-tracking" className="flex items-center gap-3 p-4 rounded-xl border border-surface-200 hover:border-primary-300 hover:bg-primary-50 transition-colors text-left">
+                  <Link to="/keywords" className="flex items-center gap-3 p-4 rounded-xl border border-surface-200 hover:border-primary-300 hover:bg-primary-50 transition-colors text-left">
                     <TrendingUp className="h-5 w-5 text-primary-600" />
                     <div>
                       <p className="font-medium text-surface-900 text-sm">Add Keywords</p>
                       <p className="text-xs text-surface-500">Track new keywords</p>
                     </div>
                   </Link>
-                  <Link to="/websites" className="flex items-center gap-3 p-4 rounded-xl border border-surface-200 hover:border-primary-300 hover:bg-primary-50 transition-colors text-left">
-                    <Users className="h-5 w-5 text-primary-600" />
+                  <Link to="/research" className="flex items-center gap-3 p-4 rounded-xl border border-surface-200 hover:border-primary-300 hover:bg-primary-50 transition-colors text-left">
+                    <Search className="h-5 w-5 text-primary-600" />
                     <div>
-                      <p className="font-medium text-surface-900 text-sm">Add Website</p>
-                      <p className="text-xs text-surface-500">Monitor a new domain</p>
+                      <p className="font-medium text-surface-900 text-sm">Keyword Research</p>
+                      <p className="text-xs text-surface-500">Discover opportunities</p>
                     </div>
                   </Link>
                 </div>

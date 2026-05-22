@@ -5,7 +5,7 @@ import { Toaster } from "sonner";
 import { useAuthStore } from "@/stores/authStore";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Loader2 } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui";
 
 // Auth pages (small, load eagerly)
 import { LoginPage } from "@/pages/Login";
@@ -56,11 +56,7 @@ const queryClient = new QueryClient({
 });
 
 function LoadingFallback() {
-  return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
-    </div>
-  );
+  return <LoadingSpinner />;
 }
 
 function App() {
@@ -72,11 +68,8 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-surface-50">
-        <div className="text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-primary-600 mx-auto" />
-          <p className="mt-3 text-sm text-surface-500">Loading...</p>
-        </div>
+      <div className="min-h-screen bg-surface-50">
+        <LoadingSpinner size="lg" message="Loading..." className="min-h-screen" />
       </div>
     );
   }
@@ -119,22 +112,6 @@ function App() {
               element={
                 <Suspense fallback={<LoadingFallback />}>
                   <RankTrackingPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/rankings"
-              element={
-                <Suspense fallback={<LoadingFallback />}>
-                  <RankTrackingPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/websites"
-              element={
-                <Suspense fallback={<LoadingFallback />}>
-                  <DashboardPage />
                 </Suspense>
               }
             />

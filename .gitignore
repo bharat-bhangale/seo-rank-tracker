@@ -4,6 +4,8 @@ node_modules/
 # Environment
 .env
 .env.local
+.env.development
+.env.staging
 .env.production
 
 # Build output
@@ -31,3 +33,6 @@ coverage/
 
 # TypeScript cache
 *.tsbuildinfo
+
+# Package artifacts
+*.tgz

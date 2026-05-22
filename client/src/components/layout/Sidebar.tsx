@@ -5,8 +5,6 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Search,
-  BarChart3,
-  Globe,
   Link2,
   FileText,
   Settings,
@@ -17,6 +15,7 @@ import {
   Sparkles,
   Swords,
   Bug,
+  SearchCheck as SearchIcon,
 } from "lucide-react";
 
 const navSections = [
@@ -31,8 +30,7 @@ const navSections = [
     label: "Tracking",
     items: [
       { label: "Keywords", path: "/keywords", icon: TrendingUp },
-      { label: "Rankings", path: "/rankings", icon: BarChart3 },
-      { label: "Websites", path: "/websites", icon: Globe },
+      { label: "Keyword Research", path: "/research", icon: SearchIcon },
       { label: "Backlinks", path: "/backlinks", icon: Link2 },
     ],
   },
