@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticate } from "../../middleware/auth.middleware";
 import { validate } from "../../middleware/validate.middleware";
-import { authLimiter } from "../../middleware/rateLimiter.middleware";
+// import { authLimiter } from "../../middleware/rateLimiter.middleware"; // Phase 8: Rate limiting — uncomment for production
 import * as authController from "./auth.controller";
 import {
   registerSchema,
@@ -13,17 +13,17 @@ import {
 
 const router = Router();
 
-// ── Public Routes (rate-limited) ────────────────────────
+// ── Public Routes ────────────────────────────────────────
 router.post(
   "/register",
-  authLimiter,
+  // authLimiter, // Phase 8: Rate limiting — uncomment for production
   validate(registerSchema),
   authController.register
 );
 
 router.post(
   "/login",
-  authLimiter,
+  // authLimiter, // Phase 8: Rate limiting — uncomment for production
   validate(loginSchema),
   authController.login
 );
@@ -32,14 +32,14 @@ router.post("/refresh", authController.refresh);
 
 router.post(
   "/forgot-password",
-  authLimiter,
+  // authLimiter, // Phase 8: Rate limiting — uncomment for production
   validate(forgotPasswordSchema),
   authController.forgotPassword
 );
 
 router.post(
   "/reset-password/:token",
-  authLimiter,
+  // authLimiter, // Phase 8: Rate limiting — uncomment for production
   validate(resetPasswordSchema),
   authController.resetPassword
 );

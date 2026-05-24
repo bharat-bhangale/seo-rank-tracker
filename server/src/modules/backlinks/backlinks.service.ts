@@ -107,7 +107,7 @@ export const enqueueSync = async (userId: string, input: SyncBacklinksInput) => 
     domain: targetDomain,
   });
 
-  return { jobId: job.id };
+  return { jobId: job?.id ?? "unavailable" };
 };
 
 export const syncBacklinksJob = async (

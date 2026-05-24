@@ -131,7 +131,7 @@ export const enqueueGscPropertySync = async (
     endDate: input.endDate,
   });
 
-  return { jobId: job.id };
+  return { jobId: job?.id ?? "unavailable" };
 };
 
 export const syncGscProperty = async (

@@ -253,7 +253,7 @@ export const enqueueManualRankCheck = async (
     location,
   });
 
-  return { jobId: job.id, keyword };
+  return { jobId: job?.id ?? "unavailable", keyword };
 };
 
 const createRankMovementAlert = async (
@@ -636,7 +636,7 @@ export const enqueueGeoGridChecks = async (
 
   return {
     points,
-    jobIds: jobs.map((job) => job.id),
+    jobIds: jobs.map((job) => job?.id ?? "unavailable"),
   };
 };
 

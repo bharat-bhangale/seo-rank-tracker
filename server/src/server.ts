@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import helmet from "helmet";
+// import helmet from "helmet"; // Phase 8: Security hardening — uncomment for production
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
@@ -8,10 +8,10 @@ import { env } from "./config/env";
 import { connectDB } from "./config/db";
 import { logger } from "./utils/logger";
 import { errorHandler } from "./middleware/errorHandler.middleware";
-import { apiLimiter } from "./middleware/rateLimiter.middleware";
+// import { apiLimiter } from "./middleware/rateLimiter.middleware"; // Phase 8: Rate limiting — uncomment for production
 import { authenticate, authorize } from "./middleware/auth.middleware";
-import { sanitizeRequest } from "./middleware/mongoSanitize.middleware";
-import { startWorkers } from "./jobs/worker";
+// import { sanitizeRequest } from "./middleware/mongoSanitize.middleware"; // Phase 8: Security hardening — uncomment for production
+// import { startWorkers } from "./jobs/worker"; // Phase 8: BullMQ workers — uncomment for production
 
 // Route imports
 import authRoutes from "./modules/auth/auth.routes";
@@ -33,14 +33,14 @@ import notificationsRoutes from "./modules/notifications/notifications.routes";
 const app = express();
 
 // ── Security Middleware ─────────────────────────────────
-app.use(helmet());
+// app.use(helmet()); // Phase 8: Security hardening — uncomment for production
 app.use(
   cors({
     origin: env.CLIENT_URL,
     credentials: true,
   })
 );
-app.use(sanitizeRequest);
+// app.use(sanitizeRequest); // Phase 8: Security hardening — uncomment for production
 
 // ── Body Parsing ────────────────────────────────────────
 app.use(express.json({ limit: "10mb" }));
@@ -53,7 +53,7 @@ if (env.NODE_ENV === "development") {
 }
 
 // ── Rate Limiting ───────────────────────────────────────
-app.use("/api", apiLimiter);
+// app.use("/api", apiLimiter); // Phase 8: Rate limiting — uncomment for production
 
 // ── Health Check ────────────────────────────────────────
 app.get("/health", (_req, res) => {
@@ -85,16 +85,16 @@ app.use("/api/v1/content", contentRoutes);
 app.use("/api/v1/competitors", competitorsRoutes);
 app.use("/api/v1/notifications", notificationsRoutes);
 
-// Queue dashboard. Keep this behind admin auth.
-app.use(
-  "/admin/queues",
-  authenticate,
-  authorize("admin"),
-  async (req, res, next) => {
-    const { bullBoardRouter } = await import("./jobs/bullBoard");
-    return bullBoardRouter(req, res, next);
-  }
-);
+// Phase 8: Bull Board queue dashboard — uncomment for production
+// app.use(
+//   "/admin/queues",
+//   authenticate,
+//   authorize("admin"),
+//   async (req, res, next) => {
+//     const { bullBoardRouter } = await import("./jobs/bullBoard");
+//     return bullBoardRouter(req, res, next);
+//   }
+// );
 
 // ── 404 Handler ─────────────────────────────────────────
 app.use((_req, res) => {
@@ -111,10 +111,11 @@ app.use(errorHandler);
 const startServer = async () => {
   await connectDB();
 
-  if (env.ENABLE_WORKERS) {
-    startWorkers();
-    logger.info("Inline workers enabled");
-  }
+  // Phase 8: BullMQ workers — uncomment for production
+  // if (env.ENABLE_WORKERS) {
+  //   startWorkers();
+  //   logger.info("Inline workers enabled");
+  // }
 
   app.listen(env.PORT, () => {
     logger.info(
